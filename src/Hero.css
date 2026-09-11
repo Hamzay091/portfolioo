@@ -1,0 +1,27 @@
+.hero {
+  position: relative;
+  padding: 14rem 1.5rem 10rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero__headline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  margin: 0;
+  font-size: clamp(3rem, 11vw, 9rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--text-h);
+}
+
+.hero__line {
+  display: block;
+}
+
+.hero__sub {
+  margin-top: 3rem;
+  max-width: 42ch;
+  font-size: 1.05rem;
+}

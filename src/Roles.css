@@ -1,0 +1,79 @@
+.roles {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 8rem 1.5rem;
+}
+
+.roles__heading {
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 2.5rem;
+}
+
+.roles__list {
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.roles__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.6rem 0.4rem;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.25s ease-out, padding-left 0.25s ease-out;
+}
+
+.roles__item:hover,
+.roles__item:focus-visible {
+  background: var(--accent-bg);
+  padding-left: 1.2rem;
+  outline: none;
+}
+
+.roles__item:focus-visible {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.roles__title {
+  font-size: clamp(1.5rem, 4vw, 2.6rem);
+  color: var(--text-h);
+}
+
+.roles__note {
+  font-size: 0.95rem;
+}
+
+.roles__cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 140px;
+  border-radius: 10px;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+  will-change: transform;
+}
+
+.roles__cursor.is-visible {
+  opacity: 1;
+}
+
+.roles__cursor video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roles__cursor { display: none; }
+  .roles__item { transition: none; }
+}

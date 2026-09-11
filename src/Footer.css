@@ -1,0 +1,35 @@
+.footer {
+  position: relative;
+  border-top: 1px solid var(--border);
+}
+
+/* This is the sticky that silently refuses to stick if any ancestor carries
+   a transform, filter or perspective. Keep .footer outside .site-main. */
+.footer__sticky {
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  place-items: end center;
+  height: 40vh;
+  overflow: hidden;
+}
+
+.footer__wordmark {
+  font-size: 19vw;
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  color: var(--text-h);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.footer__meta {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-size: 0.85rem;
+}

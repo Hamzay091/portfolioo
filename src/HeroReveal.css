@@ -1,0 +1,75 @@
+.hero-reveal {
+  position: relative;
+  will-change: filter;
+}
+
+/* Tall runway so there is scroll distance to drive the brightness fade. */
+.hero-reveal__runway {
+  height: 220vh;
+}
+
+.hero-reveal__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  cursor: crosshair;
+
+  /* Seeded off-screen so the hole is nowhere until the first pointer move. */
+  --mx: -9999px;
+  --my: -9999px;
+}
+
+.hero-reveal__stage:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+}
+
+.reveal-under,
+.reveal-top {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* transparent in the mask means "punch through", so this is a 180px window
+   into the layer below, glued to the cursor. */
+.reveal-top {
+  filter: url(#amoebaDistort);
+  -webkit-mask-image: radial-gradient(
+    circle 180px at var(--mx) var(--my),
+    transparent 98%,
+    black 100%
+  );
+  mask-image: radial-gradient(
+    circle 180px at var(--mx) var(--my),
+    transparent 98%,
+    black 100%
+  );
+}
+
+/* Keyboard and reduced-motion path: drop the top layer entirely rather than
+   chasing a pointer that isn't there. Same information, no mouse required. */
+.hero-reveal__stage.is-revealed .reveal-top {
+  opacity: 0;
+  transition: opacity 0.35s ease-out;
+  -webkit-mask-image: none;
+  mask-image: none;
+  filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-top {
+    filter: none;
+  }
+}
+
+.hero-reveal__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+}

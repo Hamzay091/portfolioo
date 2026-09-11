@@ -1,0 +1,18 @@
+.vft {
+  font-family: 'Roboto Flex', var(--sans);
+  font-variation-settings: 'wght' 820, 'wdth' 151;
+  display: inline-block;
+}
+
+.vft [data-vft-letter] {
+  display: inline-block;
+  white-space: pre; /* keeps spaces between words from collapsing */
+  will-change: font-variation-settings;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vft [data-vft-letter] {
+    transition: none !important;
+    will-change: auto;
+  }
+}

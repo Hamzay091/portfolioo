@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   THEME TOKENS
+   Define colours once. Never type a hex code anywhere else.
+   ------------------------------------------------------------------ */
+:root {
+  --sans: 'Roboto Flex', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --text: #6b6375;      /* body copy - never pure black */
+  --text-h: #08060d;    /* headings - nearly black */
+  --bg: #fff;
+  --border: #e5e4e7;
+  --accent: #aa3bff;    /* pick ONE. commit to it. */
+  --accent-bg: rgba(170, 59, 255, 0.1);
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Dark mode is twelve lines, not a two-week refactor. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #9ca3af;
+    --text-h: #f3f4f6;
+    --bg: #16171d;      /* never pure black. it hurts. */
+    --accent: #c084fc;  /* lighter - dark bgs eat saturation */
+  }
+}
+
+/* One media query drops the whole site to 16px. Every rem follows. */
+@media (max-width: 1024px) {
+  :root { font-size: 16px; }
+}
+
+/* ------------------------------------------------------------------
+   GLOBAL RESETS
+   ------------------------------------------------------------------ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-h);
+  font-weight: 500;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img, video, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* ------------------------------------------------------------------
+   LAYOUT SHELL
+   .site-main carries the intro page-rise transform, which is exactly why
+   the footer is rendered as its sibling and not a child. See App.jsx.
+   ------------------------------------------------------------------ */
+.site-main {
+  position: relative;
+  animation: page-rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.curve-region {
+  position: relative;
+}
+
+@keyframes page-rise {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-main { animation: none; }
+}
+
+/* ------------------------------------------------------------------
+   SCROLLBAR
+   Smooth scroll jitters against the native bar. Hide the chrome,
+   keep the behaviour. Full-page scroll only - never inside a panel.
+   ------------------------------------------------------------------ */
+html {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* old Edge */
+}
+
+html::-webkit-scrollbar {
+  display: none;                /* Chrome, Safari */
+}

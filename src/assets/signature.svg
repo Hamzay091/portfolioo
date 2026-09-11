@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 140" width="420" height="140"
+     fill="none" stroke="currentColor" stroke-width="3"
+     stroke-linecap="round" stroke-linejoin="round">
+  <!-- PLACEHOLDER. Replace with your own signature exported as SVG.
+       Any path works; the emotional weight comes from it being visibly yours.
+       Keep the paths stroked (fill:none) and the viewBox tight. -->
+  <path d="M18 96 C 44 24, 70 24, 78 68 C 86 112, 104 116, 118 74 C 128 44, 142 44, 148 78 C 154 112, 176 110, 190 66" />
+  <path d="M206 108 C 214 52, 228 26, 244 30 C 258 34, 252 66, 232 76 C 216 84, 210 92, 222 96 C 238 102, 268 88, 282 60" />
+  <path d="M296 92 C 308 56, 320 44, 330 52 C 340 60, 330 84, 344 88 C 360 92, 382 70, 396 40" />
+  <path d="M150 124 C 220 114, 300 114, 372 122" />
+</svg>

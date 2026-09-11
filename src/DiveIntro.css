@@ -1,0 +1,14 @@
+.dive-intro {
+  min-height: 70vh;
+  display: grid;
+  place-items: center;
+  padding: 8rem 1.5rem;
+}
+
+.dive-intro__line {
+  max-width: 28ch;
+  text-align: center;
+  font-size: clamp(1.4rem, 3.2vw, 2.4rem);
+  line-height: 1.25;
+  color: var(--text-h);
+}

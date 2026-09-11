@@ -1,0 +1,15 @@
+/* Reserved for the growing vector curve. See ScrollCurve.jsx for the plan. */
+.scroll-curve {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.scroll-curve path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
