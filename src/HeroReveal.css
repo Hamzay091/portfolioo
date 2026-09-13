@@ -14,10 +14,6 @@
   height: 100vh;
   overflow: hidden;
   cursor: crosshair;
-
-  /* Seeded off-screen so the hole is nowhere until the first pointer move. */
-  --mx: -9999px;
-  --my: -9999px;
 }
 
 .hero-reveal__stage:focus-visible {
@@ -31,25 +27,19 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   user-select: none;
   -webkit-user-drag: none;
 }
 
-/* transparent in the mask means "punch through", so this is a 180px window
-   into the layer below, glued to the cursor. */
+.reveal-under {
+  object-fit: cover;
+}
+
+/* The hole itself is an SVG mask inside .reveal-top. See HeroReveal.jsx. */
 .reveal-top {
-  filter: url(#amoebaDistort);
-  -webkit-mask-image: radial-gradient(
-    circle 180px at var(--mx) var(--my),
-    transparent 98%,
-    black 100%
-  );
-  mask-image: radial-gradient(
-    circle 180px at var(--mx) var(--my),
-    transparent 98%,
-    black 100%
-  );
+  display: block;
+  overflow: visible;
+  pointer-events: none; /* the stage owns pointer input */
 }
 
 /* Keyboard and reduced-motion path: drop the top layer entirely rather than
@@ -57,19 +47,4 @@
 .hero-reveal__stage.is-revealed .reveal-top {
   opacity: 0;
   transition: opacity 0.35s ease-out;
-  -webkit-mask-image: none;
-  mask-image: none;
-  filter: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .reveal-top {
-    filter: none;
-  }
-}
-
-.hero-reveal__defs {
-  position: absolute;
-  width: 0;
-  height: 0;
 }

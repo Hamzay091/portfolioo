@@ -9,23 +9,35 @@ import './HeroReveal.css';
 import portraitUnder from './assets/portrait-under.svg';
 import portraitOver from './assets/portrait-over.svg';
 
+const HOLE_RADIUS = 180;
+const OFFSCREEN = -9999;
+
 export default function HeroReveal() {
   const sectionRef = useRef(null);
   const runwayRef = useRef(null);
   const stageRef = useRef(null);
+  const holeRef = useRef(null);
 
   const [active, setActive] = useState(false); // pointer is over the stage
   const [forced, setForced] = useState(false); // keyboard: reveal everything
   const [reduce, setReduce] = useState(false); // prefers-reduced-motion
 
-  // JavaScript's only job is writing two CSS variables. CSS does the rest,
-  // which means zero React re-renders per mouse move.
+  // JavaScript's only job is moving one SVG circle. Writing its attributes
+  // directly means zero React re-renders per mouse move.
   const setPos = useCallback((clientX, clientY) => {
-    const el = stageRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    el.style.setProperty('--mx', `${clientX - rect.left}px`);
-    el.style.setProperty('--my', `${clientY - rect.top}px`);
+    const stage = stageRef.current;
+    const hole = holeRef.current;
+    if (!stage || !hole) return;
+    const rect = stage.getBoundingClientRect();
+    hole.setAttribute('cx', clientX - rect.left);
+    hole.setAttribute('cy', clientY - rect.top);
+  }, []);
+
+  const hideHole = useCallback(() => {
+    const hole = holeRef.current;
+    if (!hole) return;
+    hole.setAttribute('cx', OFFSCREEN);
+    hole.setAttribute('cy', OFFSCREEN);
   }, []);
 
   // Subscribe rather than read once, so toggling the OS setting updates the
@@ -96,7 +108,10 @@ export default function HeroReveal() {
             setPos(e.clientX, e.clientY); // position BEFORE revealing
             setActive(true);
           }}
-          onPointerLeave={() => setActive(false)}
+          onPointerLeave={() => {
+            hideHole();
+            setActive(false);
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
@@ -105,41 +120,79 @@ export default function HeroReveal() {
           }}
         >
           <img className="reveal-under" src={portraitUnder} alt="" />
-          <img
-            className="reveal-top"
-            src={portraitOver}
-            alt="Portrait. Move your cursor across it to reveal the second frame."
-          />
 
-          {/* feTurbulence makes Perlin noise, feDisplacementMap uses it to
-              shove pixels around, which turns a boring circle into something
-              that looks alive. The region must overflow generously or the
-              displaced pixels get clipped and the blob looks cut with scissors. */}
-          <svg className="hero-reveal__defs" aria-hidden="true" focusable="false">
-            <filter id="amoebaDistort" x="-60%" y="-60%" width="220%" height="220%">
-              <feTurbulence
-                type="turbulence"
-                baseFrequency="0.013"
-                numOctaves="2"
-                seed="4"
-                result="noise"
-              >
-                {/* animate the noise itself so the blob breathes */}
-                <animate
-                  attributeName="baseFrequency"
-                  dur="12s"
-                  values="0.009;0.018;0.012;0.009"
-                  repeatCount="indefinite"
+          {/* The top portrait is drawn inside SVG so the wobble can live on
+              the MASK, not on the photo. The filter distorts only the black
+              circle that cuts the hole. Put it on the image instead and it
+              melts the whole portrait and tears jagged gaps at the edges,
+              which is exactly what the first version of this did. */}
+          <svg
+            className="reveal-top"
+            role="img"
+            aria-label="Portrait. Move your cursor across it to reveal the second frame."
+          >
+            <defs>
+              {/* feTurbulence makes Perlin noise, feDisplacementMap uses it to
+                  shove pixels around, which turns a boring circle into
+                  something that looks alive. The region must overflow
+                  generously or the displaced edge gets clipped and the blob
+                  looks cut with scissors. */}
+              <filter id="amoebaDistort" x="-60%" y="-60%" width="220%" height="220%">
+                <feTurbulence
+                  type="turbulence"
+                  baseFrequency="0.013"
+                  numOctaves="2"
+                  seed="4"
+                  result="noise"
+                >
+                  {/* animate the noise itself so the blob breathes */}
+                  <animate
+                    attributeName="baseFrequency"
+                    dur="12s"
+                    values="0.009;0.018;0.012;0.009"
+                    repeatCount="indefinite"
+                  />
+                </feTurbulence>
+                <feDisplacementMap
+                  in="SourceGraphic"
+                  in2="noise"
+                  scale="60"
+                  xChannelSelector="R"
+                  yChannelSelector="G"
                 />
-              </feTurbulence>
-              <feDisplacementMap
-                in="SourceGraphic"
-                in2="noise"
-                scale="60"
-                xChannelSelector="R"
-                yChannelSelector="G"
-              />
-            </filter>
+              </filter>
+
+              {/* White keeps the photo, black punches through to the layer
+                  below. Only the black circle is filtered. */}
+              <mask
+                id="revealHole"
+                maskUnits="userSpaceOnUse"
+                x="0"
+                y="0"
+                width="100%"
+                height="100%"
+              >
+                <rect width="100%" height="100%" fill="white" />
+                <circle
+                  ref={holeRef}
+                  cx={OFFSCREEN}
+                  cy={OFFSCREEN}
+                  r={HOLE_RADIUS}
+                  fill="black"
+                  filter={reduce ? undefined : 'url(#amoebaDistort)'}
+                />
+              </mask>
+            </defs>
+
+            {/* preserveAspectRatio "slice" is the SVG equivalent of
+                object-fit: cover, so both layers crop identically. */}
+            <image
+              href={portraitOver}
+              width="100%"
+              height="100%"
+              preserveAspectRatio="xMidYMid slice"
+              mask="url(#revealHole)"
+            />
           </svg>
         </div>
       </div>
