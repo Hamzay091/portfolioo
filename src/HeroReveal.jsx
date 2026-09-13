@@ -6,8 +6,8 @@ import './HeroReveal.css';
 //
 // Swap these for your own two shots of the same framing and pose. They must
 // differ, or the cursor hole reveals an identical picture and looks broken.
-import portraitUnder from './assets/portrait-under.svg';
-import portraitOver from './assets/portrait-over.svg';
+import portraitUnder from './assets/portrait-under.jpg';
+import portraitOver from './assets/portrait-top.jpg';
 
 const HOLE_RADIUS = 180;
 const OFFSCREEN = -9999;
