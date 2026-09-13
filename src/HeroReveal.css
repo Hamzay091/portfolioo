@@ -31,11 +31,8 @@
   -webkit-user-drag: none;
 }
 
-/* object-position here is only the fallback before JavaScript runs. The
-   face-centred layout in HeroReveal.jsx overwrites it on every resize. */
 .reveal-under {
   object-fit: cover;
-  object-position: 50% 0%;
 }
 
 /* The hole itself is an SVG mask inside .reveal-top. See HeroReveal.jsx. */
