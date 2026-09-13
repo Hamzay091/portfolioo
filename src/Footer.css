@@ -31,8 +31,11 @@
   padding-bottom: 1.5vh;
 }
 
+/* Sized so the full name fits the viewport width. Re-check this number if
+   the wordmark text changes: it scales with vw, so it never reflows, it
+   only clips. */
 .footer__wordmark {
-  font-size: 19vw;
+  font-size: 14.5vw;
   line-height: 0.82;
   letter-spacing: -0.03em;
   color: var(--text-h);

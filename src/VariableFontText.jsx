@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import './VariableFontText.css';
 
 export const DEFAULTS = {
@@ -25,8 +25,10 @@ export default function VariableFontText({
   const rootRef = useRef(null);
   const cfg = { ...DEFAULTS, ...opts };
 
-  // Spread, not .split('') - handles emoji and combining accents correctly.
-  const letters = [...text];
+  // Letters are grouped into words so lines can only wrap BETWEEN words.
+  // Every letter is its own inline-block, and each inline-block boundary is a
+  // legal line break, so ungrouped letters wrap mid-word on long headlines.
+  const words = text.split(' ');
 
   useEffect(() => {
     const root = rootRef.current;
@@ -131,10 +133,18 @@ export default function VariableFontText({
           announces the whole phrase once from aria-label, instead of spelling
           it out one letter at a time. */}
       <span aria-hidden="true">
-        {letters.map((ch, i) => (
-          <span key={`${ch}-${i}`} data-vft-letter>
-            {ch}
-          </span>
+        {words.map((word, w) => (
+          <Fragment key={w}>
+            {w > 0 && ' '}
+            <span className="vft__word">
+              {/* Spread, not .split('') - handles emoji and accents correctly. */}
+              {[...word].map((ch, i) => (
+                <span key={i} data-vft-letter>
+                  {ch}
+                </span>
+              ))}
+            </span>
+          </Fragment>
         ))}
       </span>
     </Tag>

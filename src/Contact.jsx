@@ -1,12 +1,9 @@
 import './Contact.css';
 
-// Read your own email out loud, character by character, before you ship.
-const EMAIL = 'you@example.com';
+const EMAIL = 'devhamzay@gmail.com';
 
 const SOCIALS = [
-  { label: 'GitHub', href: 'https://github.com/' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
-  { label: 'Read.cv', href: 'https://read.cv/' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/hamza-afzal-42a962373' },
 ];
 
 export default function Contact() {

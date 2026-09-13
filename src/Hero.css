@@ -5,13 +5,16 @@
   margin: 0 auto;
 }
 
+/* Sized for two long lines rather than two short words. The per-letter
+   pinch effect needs room, so this stays large, but it has to wrap cleanly
+   at word boundaries on narrow screens. */
 .hero__headline {
   display: flex;
   flex-direction: column;
-  gap: 0.1em;
+  gap: 0.15em;
   margin: 0;
-  font-size: clamp(3rem, 11vw, 9rem);
-  line-height: 0.95;
+  font-size: clamp(2.1rem, 6vw, 5.75rem);
+  line-height: 1;
   letter-spacing: -0.02em;
   color: var(--text-h);
 }
@@ -22,6 +25,6 @@
 
 .hero__sub {
   margin-top: 3rem;
-  max-width: 42ch;
+  max-width: 52ch;
   font-size: 1.05rem;
 }

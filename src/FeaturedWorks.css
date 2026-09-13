@@ -18,11 +18,14 @@
   gap: 2.5rem;
 }
 
-.works__link {
+.works__card {
   display: block;
+  height: 100%;
 }
 
 .works__thumb {
+  display: grid;
+  place-items: center;
   aspect-ratio: 4 / 3;
   border-radius: 12px;
   background: var(--accent-bg);
@@ -30,8 +33,18 @@
   transition: transform 0.3s ease-out;
 }
 
-.works__link:hover .works__thumb,
-.works__link:focus-visible .works__thumb {
+/* Stand-in until a project screenshot exists: the title's first letter. */
+.works__initial {
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-variation-settings: 'wght' 820, 'wdth' 151;
+  color: var(--accent);
+  opacity: 0.55;
+  user-select: none;
+}
+
+/* Only real links lift on hover. A card that goes nowhere shouldn't pretend. */
+.works__card.is-link:hover .works__thumb,
+.works__card.is-link:focus-visible .works__thumb {
   transform: translateY(-6px);
 }
 
@@ -44,19 +57,30 @@
 
 .works__title {
   font-size: 1.3rem;
+  font-weight: 500;
   color: var(--text-h);
-}
-
-.works__role,
-.works__year {
-  font-size: 0.9rem;
 }
 
 .works__year {
   margin-left: auto;
+  font-size: 0.9rem;
+}
+
+.works__role {
+  margin-top: 0.15rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.works__desc {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .works__thumb { transition: none; }
-  .works__link:hover .works__thumb { transform: none; }
+  .works__card.is-link:hover .works__thumb { transform: none; }
 }

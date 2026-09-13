@@ -4,6 +4,12 @@
   display: inline-block;
 }
 
+/* A word never breaks internally; lines wrap only at the spaces between. */
+.vft__word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
 .vft [data-vft-letter] {
   display: inline-block;
   white-space: pre; /* keeps spaces between words from collapsing */

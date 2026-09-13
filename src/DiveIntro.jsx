@@ -5,7 +5,8 @@ export default function DiveIntro() {
   return (
     <section className="dive-intro">
       <p className="dive-intro__line">
-        Design engineering, somewhere between the mockup and the merge.
+        A practical problem-solver focused on building clean, user-friendly
+        software solutions.
       </p>
     </section>
   );

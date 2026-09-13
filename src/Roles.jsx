@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react';
+import rolesLoop from './assets/roles-loop.mp4';
 import './Roles.css';
 
 const ROLES = [
-  { title: 'Design Engineer', note: 'Interfaces that survive contact with real data' },
-  { title: 'Frontend', note: 'React, and the CSS nobody else wants to write' },
-  { title: 'Motion', note: 'GSAP, scroll choreography, easing arguments' },
-  { title: 'Prototyping', note: 'Answering "how would that feel" in an afternoon' },
+  { title: 'Mobile App Developer', note: 'Hands-on experience with Flutter and Dart' },
+  { title: 'Software Engineer', note: 'Developing solutions using Python and C++' },
+  { title: 'UI/UX Designer', note: 'Creating user interfaces with Figma' },
+  { title: 'Cloud Foundations', note: 'Basic knowledge of networking and Microsoft Azure' },
 ];
 
 export default function Roles({ ref }) {
@@ -45,7 +46,7 @@ export default function Roles({ ref }) {
       onPointerMove={positionAt}
       onPointerLeave={() => setHovering(false)}
     >
-      <h2 className="roles__heading">What I actually do</h2>
+      <h2 className="roles__heading">What I do</h2>
 
       <ul className="roles__list">
         {ROLES.map((role) => (
@@ -64,8 +65,7 @@ export default function Roles({ ref }) {
         ref={cursorRef}
         aria-hidden="true"
       >
-        {/* Add src="..." once you have a short compressed loop. */}
-        <video muted playsInline loop autoPlay preload="none" />
+        <video src={rolesLoop} muted playsInline loop autoPlay preload="none" />
       </div>
     </section>
   );
