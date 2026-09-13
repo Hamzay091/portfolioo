@@ -4,9 +4,10 @@ import './HeroReveal.css';
 // Two stacked portraits. The top one has a hole punched in it that follows
 // the pointer, so you see the layer below through a wobbling window.
 //
-// Swap these for your own two shots of the same framing and pose.
-import portraitUnder from './assets/hero.png';
-import portraitOver from './assets/hero.png';
+// Swap these for your own two shots of the same framing and pose. They must
+// differ, or the cursor hole reveals an identical picture and looks broken.
+import portraitUnder from './assets/portrait-under.svg';
+import portraitOver from './assets/portrait-over.svg';
 
 export default function HeroReveal() {
   const sectionRef = useRef(null);
@@ -48,11 +49,16 @@ export default function HeroReveal() {
 
     const update = () => {
       raf = 0;
+      const rect = runway.getBoundingClientRect();
       const pinDist = Math.max(1, runway.offsetHeight - window.innerHeight);
-      const p = Math.min(1, Math.max(0, -runway.getBoundingClientRect().top / pinDist));
+      const p = Math.min(1, Math.max(0, -rect.top / pinDist));
       const e = p * p; // squared = slow start, fast finish
       section.style.filter = `brightness(${1 - e * 0.55})`;
-      section.style.visibility = p >= 1 ? 'hidden' : 'visible';
+      // Hide only once the whole runway has scrolled out of view. Hiding at
+      // p >= 1 blanks the stage while it is still fully on screen, because p
+      // reaches 1 at the exact moment the sticky stage starts scrolling away,
+      // and a hidden stage also stops receiving pointer events.
+      section.style.visibility = rect.bottom <= 0 ? 'hidden' : 'visible';
     };
 
     // Scroll fires far more often than the screen refreshes. This guard

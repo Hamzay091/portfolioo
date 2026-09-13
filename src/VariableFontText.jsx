@@ -54,6 +54,7 @@ export default function VariableFontText({
     let raf = 0;
     let entered = false;
     let cleanupMove = null;
+    let pinchTimer = 0;
 
     const startPinch = () => {
       const onMove = (e) => {
@@ -100,7 +101,9 @@ export default function VariableFontText({
         s.style.fontVariationSettings = fvs(boldWght, boldWdth);
       });
 
-      window.setTimeout(
+      // Tracked so cleanup can cancel it. Otherwise an unmount mid-entrance
+      // still attaches a pointermove listener that nothing ever removes.
+      pinchTimer = window.setTimeout(
         startPinch,
         (entranceDuration + spans.length * stagger) * 1000,
       );
@@ -114,6 +117,7 @@ export default function VariableFontText({
 
     return () => {
       io.disconnect();
+      clearTimeout(pinchTimer);
       if (raf) cancelAnimationFrame(raf);
       cleanupMove?.();
     };

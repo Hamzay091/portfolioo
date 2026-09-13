@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <!-- PLACEHOLDER "under" portrait (casual). Replace with a real photo taken
+       from the same camera position, pose and light as portrait-over. -->
+  <defs>
+    <linearGradient id="bgU" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6c28b"/>
+      <stop offset="1" stop-color="#e0703a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bgU)"/>
+  <circle cx="1240" cy="220" r="120" fill="#fff3d6" opacity="0.55"/>
+  <!-- shoulders / jacket -->
+  <path d="M470 1000 C 500 760, 620 660, 800 660 C 980 660, 1100 760, 1130 1000 Z" fill="#3b6e4f"/>
+  <path d="M740 668 L 800 800 L 860 668 Z" fill="#f2e2c9"/>
+  <!-- neck + head -->
+  <rect x="760" y="560" width="80" height="120" rx="30" fill="#c98b62"/>
+  <ellipse cx="800" cy="450" rx="150" ry="180" fill="#d9a07a"/>
+  <path d="M650 420 C 650 260, 950 240, 952 420 C 930 330, 700 320, 650 420 Z" fill="#3a2418"/>
+  <text x="80" y="930" font-family="system-ui, sans-serif" font-size="44" font-weight="700" fill="#5a2a12" opacity="0.75">PLACEHOLDER · LAYER BELOW</text>
+</svg>
