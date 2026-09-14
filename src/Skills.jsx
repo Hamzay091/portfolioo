@@ -12,7 +12,7 @@ const GROUPS = [
     title: 'App & Web Development',
     items: [
       { name: 'Flutter & Dart', note: 'Mobile Development' },
-      { name: 'Web Development & Design' },
+      { name: 'Web Development & Design', note: 'HTML, CSS, Java' },
       { name: 'Microsoft Access' },
     ],
   },
