@@ -100,7 +100,9 @@ export default function App() {
       <FixedVideoBg />
 
       <main className="site-main">
-        <HeroReveal />
+        {/* Paused during the intro, so the first photo gets its full time
+            on screen instead of swapping moments after the intro lifts. */}
+        <HeroReveal paused={showIntro} />
         <DiveIntro />
 
         <div className="curve-region" ref={curveRegionRef}>

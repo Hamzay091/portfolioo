@@ -13,42 +13,54 @@
   top: 0;
   height: 100vh;
   overflow: hidden;
-  cursor: crosshair;
+  display: grid;
+  place-items: center;
+  padding: 5vh 1.25rem;
+  background:
+    radial-gradient(60% 55% at 50% 45%, rgba(192, 132, 252, 0.14), transparent 70%),
+    var(--bg);
 }
 
-.hero-reveal__stage:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: -3px;
+/* Both photos share one fixed portrait frame, so the crossfade never jumps
+   in size or position between the two differently shaped originals. */
+.hero-reveal__frame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  height: min(88vh, calc((100vw - 2.5rem) * 5 / 4));
+  max-height: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #1c1d24;
+  box-shadow:
+    0 40px 90px -40px rgba(0, 0, 0, 0.85),
+    0 0 0 1px var(--border);
 }
 
-.reveal-under,
-.reveal-top {
+.hero-reveal__photo {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  object-position: 50% 12%; /* keep faces in frame, slightly above centre */
   user-select: none;
   -webkit-user-drag: none;
-}
-
-/* Pinned to the top edge, matching preserveAspectRatio="xMidYMin slice" on
-   the top layer. Centring portrait photos in a landscape stage cuts off the
-   top of the head. */
-.reveal-under {
-  object-fit: cover;
-  object-position: 50% 0%;
-}
-
-/* The hole itself is an SVG mask inside .reveal-top. See HeroReveal.jsx. */
-.reveal-top {
-  display: block;
-  overflow: visible;
-  pointer-events: none; /* the stage owns pointer input */
-}
-
-/* Keyboard and reduced-motion path: drop the top layer entirely rather than
-   chasing a pointer that isn't there. Same information, no mouse required. */
-.hero-reveal__stage.is-revealed .reveal-top {
   opacity: 0;
-  transition: opacity 0.35s ease-out;
+  transform: scale(1.04);
+  transition:
+    opacity var(--fade, 1200ms) ease-in-out,
+    transform calc(var(--fade, 1200ms) * 4) ease-out;
+}
+
+/* The incoming photo fades in and settles from a slight zoom. */
+.hero-reveal__photo.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-reveal__photo {
+    transform: none;
+    transition: opacity 400ms linear;
+  }
 }
