@@ -76,6 +76,12 @@
   object-fit: cover;
 }
 
+/* Belt and braces: Roles.jsx doesn't render the box without a fine pointer,
+   but if it ever did, it must never show on a touch screen. */
+@media (hover: none), (pointer: coarse) {
+  .roles__cursor { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .roles__cursor { display: none; }
   .roles__item { transition: none; }

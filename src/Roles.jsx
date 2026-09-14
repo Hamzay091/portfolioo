@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import rolesLoop from './assets/roles-loop.mp4';
 import './Roles.css';
 
@@ -9,10 +9,30 @@ const ROLES = [
   { title: 'Cloud Foundations', note: 'Basic knowledge of networking and Microsoft Azure' },
 ];
 
+// The floating video follows a mouse. On touch screens there is no cursor to
+// follow, and a tap counts as the pointer "entering" the section, which left
+// the box stuck over the text. Touch devices also don't need to download the
+// ~2 MB loop for an effect they can't show.
+const FINE_POINTER = '(hover: hover) and (pointer: fine)';
+
+function useFinePointer() {
+  const [fine, setFine] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(FINE_POINTER).matches,
+  );
+  useEffect(() => {
+    const m = window.matchMedia(FINE_POINTER);
+    const sync = () => setFine(m.matches);
+    m.addEventListener('change', sync);
+    return () => m.removeEventListener('change', sync);
+  }, []);
+  return fine;
+}
+
 export default function Roles({ ref }) {
   const sectionRef = useRef(null);
   const cursorRef = useRef(null);
   const [hovering, setHovering] = useState(false);
+  const finePointer = useFinePointer();
 
   const positionAt = (e) => {
     const section = sectionRef.current;
@@ -29,9 +49,16 @@ export default function Roles({ ref }) {
   // Position BEFORE fading in, or it flashes at the section's top-left corner
   // for one frame until the first mousemove lands. Nobody can articulate what
   // they saw, they just come away feeling the site is slightly cheap.
+  // Mouse only: on a laptop with a touchscreen, a finger tap must not open it.
   const handleEnter = (e) => {
+    if (e.pointerType !== 'mouse') return;
     positionAt(e);
     setHovering(true);
+  };
+
+  const handleMove = (e) => {
+    if (e.pointerType !== 'mouse') return;
+    positionAt(e);
   };
 
   return (
@@ -42,9 +69,9 @@ export default function Roles({ ref }) {
         if (typeof ref === 'function') ref(node);
         else if (ref) ref.current = node;
       }}
-      onPointerEnter={handleEnter}
-      onPointerMove={positionAt}
-      onPointerLeave={() => setHovering(false)}
+      onPointerEnter={finePointer ? handleEnter : undefined}
+      onPointerMove={finePointer ? handleMove : undefined}
+      onPointerLeave={finePointer ? () => setHovering(false) : undefined}
     >
       <h2 className="roles__heading">What I do</h2>
 
@@ -57,16 +84,18 @@ export default function Roles({ ref }) {
         ))}
       </ul>
 
-      {/* Drop `muted` and mobile Safari refuses to autoplay. Drop
-          `playsInline` and iOS hijacks it fullscreen, which is a memorable
-          way to ruin a hover effect. */}
-      <div
-        className={`roles__cursor${hovering ? ' is-visible' : ''}`}
-        ref={cursorRef}
-        aria-hidden="true"
-      >
-        <video src={rolesLoop} muted playsInline loop autoPlay preload="none" />
-      </div>
+      {/* Only rendered for a real mouse, so phones never download the video.
+          Drop `muted` and mobile Safari refuses to autoplay. Drop
+          `playsInline` and iOS hijacks it fullscreen. */}
+      {finePointer && (
+        <div
+          className={`roles__cursor${hovering ? ' is-visible' : ''}`}
+          ref={cursorRef}
+          aria-hidden="true"
+        >
+          <video src={rolesLoop} muted playsInline loop autoPlay preload="none" />
+        </div>
+      )}
     </section>
   );
 }
