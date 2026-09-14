@@ -1,5 +1,6 @@
 .vft {
-  font-family: 'Roboto Flex', var(--sans);
+  /* Roboto Flex first: the pinch effect needs its wght and wdth axes. */
+  font-family: 'Roboto Flex', system-ui, sans-serif;
   font-variation-settings: 'wght' 820, 'wdth' 151;
   display: inline-block;
 }

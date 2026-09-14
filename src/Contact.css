@@ -6,7 +6,7 @@
 }
 
 .contact__heading {
-  font-family: var(--script);
+  font-family: var(--script, 'Dancing Script', cursive);
   font-weight: 400;
   font-size: clamp(3rem, 8vw, 5.5rem);
   line-height: 1.05;

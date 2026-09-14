@@ -9,7 +9,7 @@
   /* Handwritten accent font, chosen as the closest web match to the
      "Hamza's Creations" signature. Used for headings and names; body copy
      stays in --sans so paragraphs remain easy to read. */
-  --script: 'Dancing Script', 'Segoe Script', cursive;
+  --script: 'Dancing Script', 'Segoe Script', 'Snell Roundhand', 'Brush Script MT', cursive;
 
   --text: #6b6375;      /* body copy - never pure black */
   --text-h: #08060d;    /* headings - nearly black */
@@ -18,7 +18,7 @@
   --accent: #aa3bff;    /* pick ONE. commit to it. */
   --accent-bg: rgba(170, 59, 255, 0.1);
 
-  font: 18px/145% var(--sans);
+  font: 18px/145% var(--sans, 'Roboto Flex', system-ui, sans-serif);
   letter-spacing: 0.18px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -51,7 +51,7 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--sans);
+  font-family: var(--sans, 'Roboto Flex', system-ui, sans-serif);
   overflow-x: hidden;
 }
 
