@@ -6,6 +6,10 @@
    ------------------------------------------------------------------ */
 :root {
   --sans: 'Roboto Flex', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Handwritten accent font, chosen as the closest web match to the
+     "Hamza's Creations" signature. Used for headings and names; body copy
+     stays in --sans so paragraphs remain easy to read. */
+  --script: 'Dancing Script', 'Segoe Script', cursive;
 
   --text: #6b6375;      /* body copy - never pure black */
   --text-h: #08060d;    /* headings - nearly black */

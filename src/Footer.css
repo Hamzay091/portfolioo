@@ -35,9 +35,12 @@
    the wordmark text changes: it scales with vw, so it never reflows, it
    only clips. */
 .footer__wordmark {
-  font-size: 14.5vw;
-  line-height: 0.82;
-  letter-spacing: -0.03em;
+  font-family: var(--script);
+  font-size: 17vw;
+  /* Script letters have tall loops and descenders; a tight line-height
+     would clip them against the overflow:hidden sticky band. */
+  line-height: 1.25;
+  padding: 0 0.1em;
   color: var(--text-h);
   white-space: nowrap;
   user-select: none;

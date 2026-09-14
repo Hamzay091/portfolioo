@@ -16,7 +16,7 @@ export default function Footer() {
           above it as runway. Put anything after it and the pin shrinks to
           nothing, which is exactly what the first version of this did. */}
       <div className="footer__sticky">
-        <span className="footer__wordmark">HAMZA AFZAL</span>
+        <span className="footer__wordmark">Hamza Afzal</span>
       </div>
     </footer>
   );

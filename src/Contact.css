@@ -1,20 +1,147 @@
 .contact {
-  max-width: 1200px;
+  max-width: 820px;
   margin: 0 auto;
-  padding: 10rem 1.5rem;
+  padding: 8rem 1.5rem 9rem;
   text-align: center;
 }
 
 .contact__heading {
-  font-size: 0.85rem;
-  letter-spacing: 0.14em;
+  font-family: var(--script);
+  font-weight: 400;
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  line-height: 1.05;
+  color: var(--text-h);
+}
+
+.contact__lede {
+  margin: 1rem auto 3rem;
+  max-width: 46ch;
+}
+
+.contact__form {
+  display: grid;
+  gap: 1.1rem;
+  text-align: left;
+  padding: clamp(1.3rem, 3vw, 2.2rem);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgba(192, 132, 252, 0.12), transparent 60%),
+    var(--accent-bg);
+}
+
+.contact__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 1.1rem;
+}
+
+.contact__field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.contact__label {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 2rem;
+  color: var(--text);
+}
+
+.contact__field input,
+.contact__field textarea {
+  width: 100%;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--text-h);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.8rem 0.95rem;
+  resize: vertical;
+  transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.contact__field input:focus,
+.contact__field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+.contact__field input:disabled,
+.contact__field textarea:disabled {
+  opacity: 0.6;
+}
+
+/* Visually removed but still in the form, so bots find and fill it. */
+.contact__honey {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.contact__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.25rem;
+}
+
+.contact__submit {
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: 0;
+  border-radius: 999px;
+  padding: 0.85rem 1.8rem;
+  cursor: pointer;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, opacity 0.2s;
+}
+
+.contact__submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -12px var(--accent);
+}
+
+.contact__submit:focus-visible {
+  outline: 2px solid var(--text-h);
+  outline-offset: 3px;
+}
+
+.contact__submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.contact__status {
+  font-size: 0.95rem;
+  min-height: 1.5em;
+}
+
+.contact__status.is-sent {
+  color: var(--accent);
+}
+
+.contact__status.is-error a {
+  color: var(--accent);
+  border-bottom: 1px solid currentColor;
+}
+
+.contact__or {
+  margin-top: 3rem;
+  font-size: 0.85rem;
+  color: var(--text);
 }
 
 .contact__email {
   display: inline-block;
-  font-size: clamp(1.8rem, 6vw, 4rem);
+  margin-top: 0.4rem;
+  font-size: clamp(1.3rem, 4vw, 2.2rem);
   color: var(--text-h);
   border-bottom: 2px solid transparent;
   transition: border-color 0.25s ease-out, color 0.25s ease-out;
@@ -32,7 +159,7 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 1.75rem;
-  margin-top: 3rem;
+  margin-top: 2rem;
 }
 
 .contact__socials a {

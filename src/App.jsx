@@ -11,6 +11,7 @@ import DiveIntro from './DiveIntro.jsx';
 import ScrollCurve from './ScrollCurve.jsx';
 import Hero from './Hero.jsx';
 import Roles from './Roles.jsx';
+import Skills from './Skills.jsx';
 import FeaturedWorks from './FeaturedWorks.jsx';
 import Contact from './Contact.jsx';
 import Footer from './Footer.jsx';
@@ -111,6 +112,7 @@ export default function App() {
           <Roles ref={studioRef} />
         </div>
 
+        <Skills />
         <FeaturedWorks />
         <Contact />
       </main>

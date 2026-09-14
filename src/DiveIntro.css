@@ -32,8 +32,9 @@
   padding: 0 1.5rem;
   text-align: center;
   text-wrap: balance;
-  font-size: clamp(1.6rem, 4vw, 3.2rem);
-  line-height: 1.15;
+  font-family: var(--script);
+  font-size: clamp(2.1rem, 5vw, 4.2rem);
+  line-height: 1.2;
   color: var(--text-h);
   text-shadow: 0 0 40px var(--bg), 0 0 12px var(--bg);
   opacity: 0;

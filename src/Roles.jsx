@@ -4,7 +4,7 @@ import './Roles.css';
 
 const ROLES = [
   { title: 'Mobile App Developer', note: 'Hands-on experience with Flutter and Dart' },
-  { title: 'Software Engineer', note: 'Developing solutions using Python and C++' },
+  { title: 'Software Engineer', note: 'Developing solutions' },
   { title: 'UI/UX Designer', note: 'Creating user interfaces with Figma' },
   { title: 'Cloud Foundations', note: 'Basic knowledge of networking and Microsoft Azure' },
 ];
