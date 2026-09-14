@@ -1,14 +1,77 @@
 .dive-intro {
-  min-height: 70vh;
-  display: grid;
-  place-items: center;
-  padding: 8rem 1.5rem;
+  position: relative;
 }
 
+/* Tall runway: its extra height is the scroll distance of the flight. */
+.dive-intro__runway {
+  height: 260vh;
+}
+
+.dive-intro__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+}
+
+.dive-intro__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Starts hidden; DiveIntro.jsx resolves it out of blur as the camera arrives. */
 .dive-intro__line {
-  max-width: 28ch;
+  position: relative;
+  max-width: 30ch;
+  padding: 0 1.5rem;
   text-align: center;
-  font-size: clamp(1.4rem, 3.2vw, 2.4rem);
-  line-height: 1.25;
+  text-wrap: balance;
+  font-size: clamp(1.6rem, 4vw, 3.2rem);
+  line-height: 1.15;
   color: var(--text-h);
+  text-shadow: 0 0 40px var(--bg), 0 0 12px var(--bg);
+  opacity: 0;
+  will-change: opacity, transform, filter;
+}
+
+.dive-intro__hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text);
+  opacity: 0.7;
+}
+
+/* No WebGL: plain background, copy fully visible. */
+.dive-intro__stage.is-static .dive-intro__line {
+  opacity: 1;
+}
+.dive-intro__stage.is-static .dive-intro__hint {
+  display: none;
+}
+
+/* Reduced motion: no flight, so no need for the long runway. */
+@media (prefers-reduced-motion: reduce) {
+  .dive-intro__runway {
+    height: 100vh;
+  }
+  .dive-intro__line {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+  .dive-intro__hint {
+    display: none;
+  }
 }

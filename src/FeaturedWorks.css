@@ -18,34 +18,89 @@
   gap: 2.5rem;
 }
 
+/* Perspective lives on the parent so each card tilts in its own 3D space. */
+.works__item {
+  perspective: 1000px;
+}
+
 .works__card {
   display: block;
   height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  /* Slow, springy settle back to flat when the pointer leaves. */
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
+/* Fast follow while the pointer is on the card. */
+.works__card.is-tilting {
+  transition: transform 0.12s ease-out;
+}
+
+/* No overflow:hidden here on purpose: it would flatten preserve-3d and kill
+   the depth of the letter. The glare is rounded by inheriting the radius. */
 .works__thumb {
+  position: relative;
   display: grid;
   place-items: center;
   aspect-ratio: 4 / 3;
   border-radius: 12px;
-  background: var(--accent-bg);
+  background:
+    radial-gradient(120% 90% at 30% 20%, rgba(192, 132, 252, 0.18), transparent 60%),
+    var(--accent-bg);
   border: 1px solid var(--border);
-  transition: transform 0.3s ease-out;
+  transform-style: preserve-3d;
+  transform: translateZ(0);
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Stand-in until a project screenshot exists: the title's first letter. */
+.works__card.is-tilting .works__thumb {
+  transform: translateZ(24px);
+  box-shadow: 0 40px 70px -30px rgba(0, 0, 0, 0.75);
+}
+
+/* Stand-in until a project screenshot exists: the title's first letter,
+   which floats forward off the card when tilted. */
 .works__initial {
   font-size: clamp(3rem, 8vw, 5.5rem);
   font-variation-settings: 'wght' 820, 'wdth' 151;
   color: var(--accent);
   opacity: 0.55;
   user-select: none;
+  transform: translateZ(0);
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out;
 }
 
-/* Only real links lift on hover. A card that goes nowhere shouldn't pretend. */
-.works__card.is-link:hover .works__thumb,
-.works__card.is-link:focus-visible .works__thumb {
-  transform: translateY(-6px);
+.works__card.is-tilting .works__initial {
+  transform: translateZ(70px) scale(1.06);
+  opacity: 0.9;
+}
+
+/* Glare that tracks the pointer. */
+.works__thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--gx, 50%) var(--gy, 50%),
+    rgba(255, 255, 255, 0.2),
+    transparent 55%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease-out;
+  pointer-events: none;
+}
+
+.works__card.is-tilting .works__thumb::after {
+  opacity: 1;
+}
+
+.works__card.is-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: 12px;
 }
 
 .works__meta {
@@ -81,6 +136,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .works__thumb { transition: none; }
-  .works__card.is-link:hover .works__thumb { transform: none; }
+  .works__card,
+  .works__thumb,
+  .works__initial {
+    transition: none;
+    transform: none;
+  }
 }

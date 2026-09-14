@@ -1,30 +1,62 @@
 .hero {
   position: relative;
   padding: 14rem 1.5rem 10rem;
-  max-width: 1200px;
+  max-width: 1320px;
   margin: 0 auto;
 }
 
-/* Sized for two long lines rather than two short words. The per-letter
-   pinch effect needs room, so this stays large, but it has to wrap cleanly
-   at word boundaries on narrow screens. */
 .hero__headline {
   display: flex;
   flex-direction: column;
   gap: 0.15em;
   margin: 0;
-  font-size: clamp(2.1rem, 6vw, 5.75rem);
-  line-height: 1;
+  /* rem is 18px on desktop, so the cap is ~67px: the largest size at which
+     each phrase still fits on one line inside the 1320px column. The floor
+     (~29px on phones, where rem is 16px) is the largest size at which
+     "integrated systems" still fits one phone-width line, so each phrase
+     wraps into two even lines with no word stranded. */
+  font-size: clamp(1.8rem, 4.6vw, 3.75rem);
+  line-height: 1.02;
   letter-spacing: -0.02em;
   color: var(--text-h);
 }
 
+/* balance evens out the lines when a phrase has to wrap, so a single word
+   is never left stranded alone on its own line. */
 .hero__line {
   display: block;
+  text-wrap: balance;
+}
+
+/* 3D flip-in. Each word starts folded back below its baseline and swings up
+   into place, staggered by its index (set as --i in Hero.jsx). The
+   perspective() lives inside the transform so every word carries its own 3D
+   space, independent of the wrapper spans around it. */
+.hero__headline .vft__word {
+  transform-origin: 50% 100%;
+  transform: perspective(700px) rotateX(-85deg) translateY(0.25em);
+  opacity: 0;
+  transition:
+    transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.6s ease-out;
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+
+.hero__headline.is-in .vft__word {
+  transform: perspective(700px) rotateX(0deg) translateY(0);
+  opacity: 1;
 }
 
 .hero__sub {
   margin-top: 3rem;
   max-width: 52ch;
   font-size: 1.05rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__headline .vft__word {
+    transform: none;
+    opacity: 1;
+    transition: none;
+  }
 }

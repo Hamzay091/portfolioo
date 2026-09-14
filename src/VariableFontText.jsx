@@ -136,14 +136,20 @@ export default function VariableFontText({
         {words.map((word, w) => (
           <Fragment key={w}>
             {w > 0 && ' '}
-            <span className="vft__word">
-              {/* Spread, not .split('') - handles emoji and accents correctly. */}
-              {[...word].map((ch, i) => (
-                <span key={i} data-vft-letter>
-                  {ch}
-                </span>
-              ))}
-            </span>
+            {/* Hyphenated words are split after each hyphen into separate
+                unbreakable pieces, so "cloud-integrated" can wrap as
+                "cloud-" / "integrated" on narrow screens instead of forcing
+                the whole word, and its neighbours, onto new lines. */}
+            {word.split(/(?<=-)/).map((part, j) => (
+              <span className="vft__word" key={j}>
+                {/* Spread, not .split('') - handles emoji and accents correctly. */}
+                {[...part].map((ch, i) => (
+                  <span key={i} data-vft-letter>
+                    {ch}
+                  </span>
+                ))}
+              </span>
+            ))}
           </Fragment>
         ))}
       </span>
