@@ -1,66 +1,329 @@
-.hero-reveal {
+/* Name-behind-portrait hero. Stacking is DOM order: name, then photo, then
+   the bottom fade, then the text blocks. */
+.hn {
   position: relative;
-  will-change: filter;
-}
-
-/* Tall runway so there is scroll distance to drive the brightness fade. */
-.hero-reveal__runway {
-  height: 220vh;
-}
-
-.hero-reveal__stage {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  height: 100svh;
+  min-height: 620px;
   overflow: hidden;
-  display: grid;
-  place-items: center;
-  padding: 5vh 1.25rem;
+  isolation: isolate;
   background:
-    radial-gradient(60% 55% at 50% 45%, rgba(192, 132, 252, 0.14), transparent 70%),
+    radial-gradient(65% 55% at 50% 40%, rgba(192, 132, 252, 0.16), transparent 70%),
     var(--bg);
 }
 
-/* Both photos share one fixed portrait frame, so the crossfade never jumps
-   in size or position between the two differently shaped originals. */
-.hero-reveal__frame {
-  position: relative;
-  aspect-ratio: 4 / 5;
-  height: min(88vh, calc((100vw - 2.5rem) * 5 / 4));
-  max-height: 100%;
-  border-radius: 22px;
-  overflow: hidden;
-  background: #1c1d24;
-  box-shadow:
-    0 40px 90px -40px rgba(0, 0, 0, 0.85),
-    0 0 0 1px var(--border);
+/* ---------- status pill ---------- */
+
+.hn__status {
+  position: absolute;
+  top: 96px;
+  left: 50%;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  transform: translate(-50%, -12px);
+  opacity: 0;
+  transition:
+    opacity 0.6s ease-out 0.9s,
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.9s;
 }
 
-.hero-reveal__photo {
+.hn.is-in .hn__status {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.hn__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6);
+  animation: hn-pulse 2s ease-out infinite;
+}
+
+@keyframes hn-pulse {
+  70% { box-shadow: 0 0 0 8px rgba(74, 222, 128, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+
+/* ---------- giant name ---------- */
+
+.hn__name {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 12%; /* keep faces in frame, slightly above centre */
+  top: 23svh;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.26em;
+  font-family: 'Roboto Flex', system-ui, sans-serif;
+  font-variation-settings: 'wght' 900, 'wdth' 151;
+  font-size: clamp(3rem, 9.8vw, 13rem);
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: var(--text-h);
+  transform: translate3d(calc(var(--px, 0) * -26px), calc(var(--py, 0) * -14px), 0);
+  transition: transform 0.35s ease-out;
+}
+
+.hn__first,
+.hn__last {
+  display: inline-block;
+  transition: transform 0.25s ease-out;
+}
+
+/* Scrolling pulls the two halves of the name apart. */
+.hn__first {
+  color: var(--accent);
+  text-shadow: 0 0 60px rgba(192, 132, 252, 0.35);
+  transform: translateX(calc(var(--sp, 0) * -9vw));
+}
+
+.hn__last {
+  transform: translateX(calc(var(--sp, 0) * 9vw));
+}
+
+/* Each letter swings up from below its baseline in 3D, one after another. */
+.hn__char {
+  display: inline-block;
+  transform-origin: 50% 100%;
+  opacity: 0;
+  transform: perspective(700px) translateY(55%) rotateX(-75deg);
+  transition:
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.5s ease-out;
+  transition-delay: calc(120ms + var(--i, 0) * 55ms);
+}
+
+.hn.is-in .hn__char {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- portrait ---------- */
+
+.hn__person {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  z-index: 2;
+  /* max-content: with left: 50% an absolute box may only be as wide as the
+     remaining half of the screen, which squashed the photo sideways. */
+  width: max-content;
+  transform: translate3d(calc(-50% + var(--px, 0) * 16px), calc(var(--sp, 0) * 8vh), 0);
+  transition: transform 0.35s ease-out;
+}
+
+.hn__photo {
+  display: block;
+  height: min(94svh, 96vw);
+  width: auto;
   user-select: none;
   -webkit-user-drag: none;
+  -webkit-mask-image: var(--mask);
+  mask-image: var(--mask);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   opacity: 0;
-  transform: scale(1.04);
+  transform: translateY(6%) scale(0.97);
+  transform-origin: 50% 100%;
   transition:
-    opacity var(--fade, 1200ms) ease-in-out,
-    transform calc(var(--fade, 1200ms) * 4) ease-out;
+    opacity 0.9s ease-out 0.25s,
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
 }
 
-/* The incoming photo fades in and settles from a slight zoom. */
-.hero-reveal__photo.is-active {
+.hn.is-in .hn__photo {
   opacity: 1;
-  transform: scale(1);
+  transform: none;
 }
+
+/* Melts the bottom of the portrait into the page. */
+.hn__fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+}
+
+/* ---------- intro block (bottom left) ---------- */
+
+.hn__intro {
+  position: absolute;
+  left: clamp(1.5rem, 5vw, 5rem);
+  bottom: 12svh;
+  z-index: 3;
+  max-width: 24rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.7s ease-out 0.75s,
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.75s;
+}
+
+.hn.is-in .hn__intro {
+  opacity: 1;
+  transform: none;
+}
+
+.hn__role {
+  font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--text-h);
+}
+
+.hn__tagline {
+  margin-top: 0.6rem;
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.hn__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1.4rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--text-h);
+  transition:
+    background 0.25s ease-out,
+    color 0.25s ease-out,
+    transform 0.25s ease-out,
+    box-shadow 0.25s ease-out;
+}
+
+.hn__cta:hover,
+.hn__cta:focus-visible {
+  background: var(--accent);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -14px var(--accent);
+}
+
+.hn__cta:focus-visible {
+  outline: 2px solid var(--text-h);
+  outline-offset: 3px;
+}
+
+/* ---------- social links (right) ---------- */
+
+.hn__social {
+  position: absolute;
+  right: clamp(1.5rem, 5vw, 5rem);
+  bottom: 13svh;
+  z-index: 3;
+  list-style: none;
+  display: grid;
+  gap: 1.1rem;
+  text-align: right;
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.7s ease-out 0.9s,
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.9s;
+}
+
+.hn.is-in .hn__social {
+  opacity: 1;
+  transform: none;
+}
+
+.hn__social a {
+  font-size: 0.92rem;
+  color: var(--text);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: color 0.2s ease-out, border-color 0.2s ease-out;
+}
+
+.hn__social a:hover,
+.hn__social a:focus-visible {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ---------- phones ---------- */
+
+@media (max-width: 700px) {
+  .hn__status {
+    top: 88px;
+  }
+
+  /* Sized so "HAMZA" fits the width, and placed low enough that the second
+     line passes behind the head. */
+  .hn__name {
+    top: 29svh;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    font-size: 18.5vw;
+    line-height: 0.9;
+  }
+
+  .hn__photo {
+    height: min(78svh, 150vw);
+  }
+
+  .hn__fade {
+    height: 48%;
+  }
+
+  .hn__intro {
+    left: 1.25rem;
+    right: 1.25rem;
+    bottom: 1.75rem;
+    max-width: none;
+  }
+
+  .hn__social {
+    display: none;
+  }
+}
+
+/* ---------- reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-reveal__photo {
+  .hn__char,
+  .hn__photo,
+  .hn__intro,
+  .hn__social,
+  .hn__status {
+    transition: opacity 0.3s linear;
     transform: none;
-    transition: opacity 400ms linear;
+  }
+  .hn__status {
+    transform: translate(-50%, 0);
+  }
+  .hn__name,
+  .hn__person,
+  .hn__first,
+  .hn__last {
+    transition: none;
+  }
+  .hn__dot {
+    animation: none;
   }
 }

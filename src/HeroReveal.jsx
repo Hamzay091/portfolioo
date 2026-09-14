@@ -1,119 +1,138 @@
 import { useEffect, useRef, useState } from 'react';
 import './HeroReveal.css';
 
-import portraitStanding from './assets/portrait-standing.jpg';
-import portraitSeated from './assets/portrait-seated.jpg';
+import portrait from './assets/portrait-standing.jpg';
+// Transparency mask for the photo: opaque over Hamza, clear over the studio
+// backdrop. It lets the giant name show on both sides and pass behind him.
+// Replace this file (same size as the photo, white with alpha) to refine
+// the cutout without touching any code.
+import portraitMask from './assets/portrait-standing-mask.png';
 
-// One centered portrait at a time, crossfading to the next on a timer.
-const PHOTOS = [portraitStanding, portraitSeated];
-const SHOW_MS = 4000; // how long each photo stays fully visible
-const FADE_MS = 1200; // crossfade length; must match --fade in the CSS
+const EMAIL = 'devhamzay@gmail.com';
+const LINKEDIN = 'https://www.linkedin.com/in/hamza-afzal-42a962373';
+const FIRST = 'HAMZA';
+const LAST = 'AFZAL';
 
 export default function HeroReveal({ paused = false }) {
-  const sectionRef = useRef(null);
-  const runwayRef = useRef(null);
-  const [active, setActive] = useState(0);
+  const rootRef = useRef(null);
+  const [entered, setEntered] = useState(false);
 
-  // Advance on a timer, but only while the hero is on screen, the tab is
-  // visible and the intro is gone. Otherwise the photo keeps changing where
-  // nobody can see it: behind the intro it would swap almost as soon as the
-  // intro lifted. When `paused` flips off, the timer starts from zero.
+  // Hold the entrance until the intro loader has lifted, so the name rises
+  // while it can actually be seen.
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    let timer = 0;
-    let onScreen = true;
-
-    const stop = () => {
-      clearTimeout(timer);
-      timer = 0;
-    };
-    const schedule = () => {
-      stop();
-      if (paused || !onScreen || document.hidden) return;
-      timer = window.setTimeout(() => {
-        setActive((i) => (i + 1) % PHOTOS.length);
-        schedule();
-      }, SHOW_MS + FADE_MS);
-    };
-
-    const io = new IntersectionObserver(([entry]) => {
-      onScreen = entry.isIntersecting;
-      schedule();
-    });
-    io.observe(section);
-
-    const onVisibility = () => schedule();
-    document.addEventListener('visibilitychange', onVisibility);
-
-    schedule();
-    return () => {
-      stop();
-      io.disconnect();
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
+    if (paused) return;
+    const id = requestAnimationFrame(() => setEntered(true));
+    return () => cancelAnimationFrame(id);
   }, [paused]);
 
-  // Brightness fade on scroll. No timeline, no ScrollTrigger, just maths on
-  // scroll progress - sometimes a raw listener really is the simpler tool.
+  // Depth: the name drifts against the mouse and the photo drifts with it,
+  // and scrolling splits the two halves of the name apart. JavaScript only
+  // writes CSS variables, at most once per frame.
   useEffect(() => {
-    const section = sectionRef.current;
-    const runway = runwayRef.current;
-    if (!section || !runway) return;
+    const el = rootRef.current;
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
     let raf = 0;
-
-    const update = () => {
+    let px = 0;
+    let py = 0;
+    const write = () => {
       raf = 0;
-      const rect = runway.getBoundingClientRect();
-      const pinDist = Math.max(1, runway.offsetHeight - window.innerHeight);
-      const p = Math.min(1, Math.max(0, -rect.top / pinDist));
-      const e = p * p; // squared = slow start, fast finish
-      section.style.filter = `brightness(${1 - e * 0.55})`;
-      // Hide only once the whole runway has scrolled out of view. Hiding at
-      // p >= 1 blanks the stage while it is still fully on screen, because p
-      // reaches 1 at the exact moment the sticky stage starts scrolling away.
-      section.style.visibility = rect.bottom <= 0 ? 'hidden' : 'visible';
+      const r = el.getBoundingClientRect();
+      const sp = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height)));
+      el.style.setProperty('--px', px.toFixed(3));
+      el.style.setProperty('--py', py.toFixed(3));
+      el.style.setProperty('--sp', sp.toFixed(3));
+    };
+    const request = () => {
+      if (!raf) raf = requestAnimationFrame(write);
+    };
+    const onMove = (e) => {
+      if (e.pointerType !== 'mouse') return;
+      px = e.clientX / window.innerWidth - 0.5;
+      py = e.clientY / window.innerHeight - 0.5;
+      request();
+    };
+    const onLeave = () => {
+      px = 0;
+      py = 0;
+      request();
     };
 
-    // Scroll fires far more often than the screen refreshes. This guard
-    // collapses a burst of events into exactly one paint per frame.
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('scroll', request, { passive: true });
+    if (fine) {
+      el.addEventListener('pointermove', onMove);
+      el.addEventListener('pointerleave', onLeave);
+    }
+    write();
     return () => {
-      window.removeEventListener('scroll', onScroll);
       if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', request);
+      el.removeEventListener('pointermove', onMove);
+      el.removeEventListener('pointerleave', onLeave);
     };
   }, []);
 
+  const letters = (word, offset) =>
+    [...word].map((ch, i) => (
+      <span className="hn__char" key={i} style={{ '--i': i + offset }}>
+        {ch}
+      </span>
+    ));
+
   return (
-    <section className="hero-reveal" id="home" ref={sectionRef}>
-      <div className="hero-reveal__runway" ref={runwayRef}>
-        <div className="hero-reveal__stage">
-          <div
-            className="hero-reveal__frame"
-            role="img"
-            aria-label="Portraits of Hamza Afzal"
-            style={{ '--fade': `${FADE_MS}ms` }}
-          >
-            {PHOTOS.map((src, i) => (
-              <img
-                key={src}
-                className={`hero-reveal__photo${i === active ? ' is-active' : ''}`}
-                src={src}
-                alt=""
-                draggable="false"
-                decoding="async"
-              />
-            ))}
-          </div>
-        </div>
+    <section id="home" className={`hn${entered ? ' is-in' : ''}`} ref={rootRef}>
+      <p className="hn__status">
+        <span className="hn__dot" aria-hidden="true" />
+        Available for new projects
+      </p>
+
+      {/* Painted first, so the photo that follows sits in front of it. */}
+      <h1 className="hn__name" aria-label="Hamza Afzal">
+        <span className="hn__first" aria-hidden="true">
+          {letters(FIRST, 0)}
+        </span>
+        <span className="hn__last" aria-hidden="true">
+          {letters(LAST, FIRST.length + 1)}
+        </span>
+      </h1>
+
+      <div className="hn__person">
+        <img
+          className="hn__photo"
+          src={portrait}
+          alt="Hamza Afzal"
+          draggable="false"
+          style={{ '--mask': `url(${portraitMask})` }}
+        />
       </div>
+
+      <div className="hn__fade" aria-hidden="true" />
+
+      <div className="hn__intro">
+        <h2 className="hn__role">Software Engineer</h2>
+        <p className="hn__tagline">
+          Mobile apps, UI/UX design and cloud-integrated systems.
+        </p>
+        <a className="hn__cta" href="#contact">
+          Let's collaborate <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <ul className="hn__social">
+        <li>
+          <a href={LINKEDIN} target="_blank" rel="noreferrer noopener">
+            LinkedIn
+          </a>
+        </li>
+        <li>
+          <a href={`mailto:${EMAIL}`}>Email</a>
+        </li>
+        <li>
+          <a href="#work">Work</a>
+        </li>
+      </ul>
     </section>
   );
 }

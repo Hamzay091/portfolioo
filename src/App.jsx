@@ -109,8 +109,8 @@ export default function App() {
       <FixedVideoBg />
 
       <main className="site-main">
-        {/* Paused during the intro, so the first photo gets its full time
-            on screen instead of swapping moments after the intro lifts. */}
+        {/* Held during the intro, so the name and portrait entrance plays
+            once the intro lifts instead of hidden behind it. */}
         <HeroReveal paused={showIntro} />
         <DiveIntro />
 
