@@ -5,39 +5,44 @@
   display: grid;
   place-items: center;
   background: var(--bg);
-  /* Draw for 2s, hold briefly, then lift the whole panel away.
+  /* Write for ~1.9s, hold briefly, then lift the whole panel away.
      animationend on `intro-lift` is what unmounts this component. */
-  animation: intro-lift 0.9s cubic-bezier(0.16, 1, 0.3, 1) 2.3s forwards;
+  animation: intro-lift 0.9s cubic-bezier(0.16, 1, 0.3, 1) 2.5s forwards;
 }
 
+/* White ink on transparent, so it reads on the dark page. */
 .intro-sig {
-  width: min(420px, 62vw);
-  color: var(--text-h);
-}
-
-.intro-sig svg {
-  width: 100%;
+  width: min(560px, 78vw);
   height: auto;
-  overflow: visible;
+  user-select: none;
+  -webkit-user-drag: none;
+
+  /* A mask twice the image width: solid on the left, soft edge, clear on the
+     right. Sliding it from right to left uncovers the signature with a
+     feathered leading edge, like ink following a pen. */
+  -webkit-mask-image: linear-gradient(90deg, #000 45%, transparent 55%);
+  mask-image: linear-gradient(90deg, #000 45%, transparent 55%);
+  -webkit-mask-size: 220% 100%;
+  mask-size: 220% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 100% 0;
+  mask-position: 100% 0;
+  animation: sig-write 1.9s cubic-bezier(0.45, 0.05, 0.35, 1) 0.2s forwards;
 }
 
-.intro-sig path {
-  fill: none;
-  stroke: var(--text-h);
-  stroke-width: 2;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1; /* fully hidden */
-  animation: draw 2s ease forwards;
+@keyframes sig-write {
+  to {
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
+  }
 }
 
-/* Stagger the strokes so it reads as one continuous hand, not four
-   lines racing each other. */
-.intro-sig path:nth-child(2) { animation-delay: 0.45s; }
-.intro-sig path:nth-child(3) { animation-delay: 0.9s; }
-.intro-sig path:nth-child(4) { animation-delay: 1.3s; }
-
-@keyframes draw {
-  to { stroke-dashoffset: 0; }
+/* Light theme: the white ink would vanish on a white page, so invert it. */
+@media (prefers-color-scheme: light) {
+  .intro-sig {
+    filter: invert(1);
+  }
 }
 
 @keyframes intro-lift {

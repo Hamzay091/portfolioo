@@ -1,9 +1,16 @@
 import { useEffect, useRef } from 'react';
+import taskpointImg from './assets/projects/taskpoint.jpg';
+import stockImg from './assets/projects/stock-market-prediction.jpg';
+import assistantImg from './assets/projects/ai-desktop-assistant.jpg';
+import payrollImg from './assets/projects/employee-payroll-system.jpg';
 import './FeaturedWorks.css';
 
 // The part recruiters actually came for. Add an `href` to any project that has
 // a live demo, repository or case study, and its card becomes a link. Cards
 // without one render as plain cards instead of links that go nowhere.
+//
+// image: thumbnail. fit: 'cover' fills the frame and crops, 'contain' shows
+// the whole image on `thumbBg` (use it for logos). year: null hides it.
 const WORKS = [
   {
     title: 'TaskPoint',
@@ -11,6 +18,10 @@ const WORKS = [
     year: '2026',
     description:
       'AI-assisted labour marketplace. A cross-platform mobile application connecting workers with job seekers.',
+    // Logo pre-composed onto its own background at the card's 11:6 shape, so
+    // it fills the frame like the others and no image edge can show.
+    image: taskpointImg,
+    fit: 'cover',
     href: null,
   },
   {
@@ -19,6 +30,8 @@ const WORKS = [
     year: '2026',
     description:
       'Comprehensive research using Python and machine learning to predict stock market trends.',
+    image: stockImg,
+    fit: 'cover',
     href: null,
   },
   {
@@ -27,6 +40,18 @@ const WORKS = [
     year: '2026',
     description:
       'A voice-activated, Jarvis-style desktop assistant with built-in speech-to-text, written in Python.',
+    image: assistantImg,
+    fit: 'cover',
+    href: null,
+  },
+  {
+    title: 'Employee Payroll System',
+    role: 'Microsoft Access',
+    year: null,
+    description:
+      'Ensures efficient, accurate and organised payroll processing for an organisation by managing employee records, calculating salaries, processing payroll, handling deductions and automating data entry.',
+    image: payrollImg,
+    fit: 'cover',
     href: null,
   },
 ];
@@ -97,12 +122,27 @@ function Card({ work }) {
 
   const body = (
     <>
-      <div className="works__thumb" aria-hidden="true">
-        <span className="works__initial">{work.title.charAt(0)}</span>
+      <div
+        className={`works__thumb${work.image ? ' has-image' : ''}`}
+        style={work.thumbBg ? { background: work.thumbBg } : undefined}
+        aria-hidden="true"
+      >
+        {work.image ? (
+          <img
+            className={`works__img is-${work.fit || 'cover'}`}
+            src={work.image}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            draggable="false"
+          />
+        ) : (
+          <span className="works__initial">{work.title.charAt(0)}</span>
+        )}
       </div>
       <div className="works__meta">
         <h3 className="works__title">{work.title}</h3>
-        <span className="works__year">{work.year}</span>
+        {work.year && <span className="works__year">{work.year}</span>}
       </div>
       <p className="works__role">{work.role}</p>
       <p className="works__desc">{work.description}</p>
