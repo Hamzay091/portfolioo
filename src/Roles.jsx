@@ -63,6 +63,7 @@ export default function Roles({ ref }) {
 
   return (
     <section
+      id="what-i-do"
       className="roles"
       ref={(node) => {
         sectionRef.current = node;

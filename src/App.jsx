@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 
 import IntroLoader from './IntroLoader.jsx';
+import Nav from './Nav.jsx';
 import ScrollBackground from './ScrollBackground.jsx';
 import FixedVideoBg from './FixedVideoBg.jsx';
 import HeroReveal from './HeroReveal.jsx';
@@ -55,7 +56,10 @@ export default function App() {
       // feels like. The 1.001 is a fudge so it actually reaches 1.
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      anchors: true, // #contact links glide instead of jump
+      // #contact links glide instead of jump. The gap left for the fixed
+      // navigation bar comes from scroll-margin-top in index.css, which Lenis
+      // already honours; adding an offset here too would double it.
+      anchors: true,
     });
 
     // THE LINE. ScrollTrigger now reads Lenis' interpolated position instead
@@ -95,6 +99,11 @@ export default function App() {
   return (
     <>
       {showIntro && <IntroLoader onComplete={() => setShowIntro(false)} />}
+
+      {/* Outside .site-main for the same reason as the footer: the main
+          element carries a transform, which would stop the fixed nav from
+          staying fixed to the viewport. */}
+      <Nav ready={!showIntro} />
 
       <ScrollBackground zoomed={studioReached} />
       <FixedVideoBg />

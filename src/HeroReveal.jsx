@@ -92,7 +92,7 @@ export default function HeroReveal({ paused = false }) {
   }, []);
 
   return (
-    <section className="hero-reveal" ref={sectionRef}>
+    <section className="hero-reveal" id="home" ref={sectionRef}>
       <div className="hero-reveal__runway" ref={runwayRef}>
         <div className="hero-reveal__stage">
           <div

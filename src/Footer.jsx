@@ -8,7 +8,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer__meta">
         <span>© {new Date().getFullYear()}</span>
-        <a href="#top">Back to top</a>
+        <a href="#home">Back to top</a>
       </div>
 
       {/* The wordmark is the LAST child on purpose. A bottom:0 sticky element

@@ -84,6 +84,13 @@ img, video, svg {
   position: relative;
 }
 
+/* Leave room for the fixed navigation bar above any section reached from a
+   menu link. Both Lenis smooth scroll and native jumps honour this, so it is
+   the only place the gap is defined. */
+section[id] {
+  scroll-margin-top: 90px;
+}
+
 @keyframes page-rise {
   from { transform: translateY(40px); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
