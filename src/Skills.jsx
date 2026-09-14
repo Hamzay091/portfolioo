@@ -9,11 +9,10 @@ const GROUPS = [
     items: [{ name: 'C++' }, { name: 'Python' }, { name: 'SQL' }],
   },
   {
-    title: 'App, Web & Game Development',
+    title: 'App & Web Development',
     items: [
       { name: 'Flutter & Dart', note: 'Mobile Development' },
       { name: 'Web Development & Design' },
-      { name: 'Unity' },
       { name: 'Microsoft Access' },
     ],
   },
