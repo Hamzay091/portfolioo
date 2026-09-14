@@ -31,8 +31,12 @@
   -webkit-user-drag: none;
 }
 
+/* Pinned to the top edge, matching preserveAspectRatio="xMidYMin slice" on
+   the top layer. Centring portrait photos in a landscape stage cuts off the
+   top of the head. */
 .reveal-under {
   object-fit: cover;
+  object-position: 50% 0%;
 }
 
 /* The hole itself is an SVG mask inside .reveal-top. See HeroReveal.jsx. */

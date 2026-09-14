@@ -184,13 +184,15 @@ export default function HeroReveal() {
               </mask>
             </defs>
 
-            {/* preserveAspectRatio "slice" is the SVG equivalent of
-                object-fit: cover, so both layers crop identically. */}
+            {/* "slice" is the SVG equivalent of object-fit: cover. "YMin" pins
+                the top edge instead of centring: these are portrait photos in
+                a landscape stage, and centring crops the top of the head.
+                Matches object-position on .reveal-under in the CSS. */}
             <image
               href={portraitOver}
               width="100%"
               height="100%"
-              preserveAspectRatio="xMidYMid slice"
+              preserveAspectRatio="xMidYMin slice"
               mask="url(#revealHole)"
             />
           </svg>
