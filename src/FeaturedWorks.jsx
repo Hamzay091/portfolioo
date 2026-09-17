@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import taskpointImg from './assets/projects/taskpoint.jpg';
+import tpProviderVideo from './assets/projects/taskpoint/provider.mp4';
+import tpSeekerVideo from './assets/projects/taskpoint/seeker.mp4';
+import tpAdminDashboard from './assets/projects/taskpoint/admin-dashboard.png';
+import tpAdminVerification from './assets/projects/taskpoint/admin-verification.png';
+import tpAdminJobs from './assets/projects/taskpoint/admin-jobs.png';
+import tpAdminReports from './assets/projects/taskpoint/admin-reports.png';
+import tpAdminCategories from './assets/projects/taskpoint/admin-categories.png';
 import stockImg from './assets/projects/stock-market-prediction.jpg';
 import assistantImg from './assets/projects/ai-desktop-assistant.jpg';
 import payrollImg from './assets/projects/employee-payroll-system.jpg';
@@ -35,6 +42,34 @@ const WORKS = [
       'Interface designed before development, so the layout and flow were tested first',
     ],
     tech: ['Flutter & Dart', 'Mobile development', 'Figma (UI/UX design)'],
+    // Walk-throughs of the three faces of the product. Each renders as its own
+    // titled block inside the case study.
+    sections: [
+      {
+        kind: 'video',
+        label: 'Service provider app',
+        note: 'The worker side: finding nearby jobs, negotiating and getting paid.',
+        src: tpProviderVideo,
+      },
+      {
+        kind: 'video',
+        label: 'Service seeker app',
+        note: 'The customer side: posting a job, choosing a worker and tracking it.',
+        src: tpSeekerVideo,
+      },
+      {
+        kind: 'gallery',
+        label: 'Web admin panel',
+        note: 'Where the platform is run: identity checks, jobs, disputes and categories. Click a screenshot to open it full size. Test users’ personal details are hidden.',
+        images: [
+          { src: tpAdminDashboard, alt: 'Admin dashboard showing pending verifications, reports and active users' },
+          { src: tpAdminVerification, alt: 'Identity verification screen with approve and reject actions' },
+          { src: tpAdminJobs, alt: 'Jobs list filtered by status, with force cancel' },
+          { src: tpAdminReports, alt: 'Reports screen showing an open dispute' },
+          { src: tpAdminCategories, alt: 'Service categories with icons and display order' },
+        ],
+      },
+    ],
     links: [],
   },
   {
@@ -260,6 +295,37 @@ function ProjectDialog({ work, onClose }) {
           </h2>
 
           <p className="pv__overview">{work.overview || work.description}</p>
+
+          {work.sections?.map((section) => (
+            <section className="pv__section" key={section.label}>
+              <h3 className="pv__sub">{section.label}</h3>
+              {section.note && <p className="pv__note">{section.note}</p>}
+
+              {section.kind === 'video' && (
+                // preload="metadata" fetches only the header, so four videos on
+                // one page cost nothing until someone presses play.
+                <video
+                  className="pv__video"
+                  src={section.src}
+                  controls
+                  playsInline
+                  preload="metadata"
+                />
+              )}
+
+              {section.kind === 'gallery' && (
+                <ul className="pv__shots">
+                  {section.images.map((shot) => (
+                    <li key={shot.src}>
+                      <a href={shot.src} target="_blank" rel="noreferrer noopener">
+                        <img src={shot.src} alt={shot.alt} loading="lazy" decoding="async" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))}
 
           {work.highlights?.length > 0 && (
             <>
