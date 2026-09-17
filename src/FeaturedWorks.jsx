@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import taskpointImg from './assets/projects/taskpoint.jpg';
 import tpProviderVideo from './assets/projects/taskpoint/provider.mp4';
@@ -12,6 +12,10 @@ import stockImg from './assets/projects/stock-market-prediction.jpg';
 import assistantImg from './assets/projects/ai-desktop-assistant.jpg';
 import payrollImg from './assets/projects/employee-payroll-system.jpg';
 import './FeaturedWorks.css';
+
+// The paper, its figures and its tables are a chunk of their own: nobody pays
+// for them until they press "Read the paper".
+const PaperReader = lazy(() => import('./PaperReader.jsx'));
 
 const EMAIL = 'devhamzay@gmail.com';
 
@@ -89,6 +93,9 @@ const WORKS = [
       'Findings written up as a full research report',
     ],
     tech: ['Python', 'Machine learning', 'Data analysis'],
+    // Opens the full paper in the reader. Read-only on purpose: it is the
+    // text itself on the page, not a file to take away.
+    paper: true,
     links: [],
   },
   {
@@ -231,7 +238,7 @@ function Card({ work, onOpen }) {
 // The case study. Portalled to <body> because .site-main carries the intro
 // page-rise transform, and a transformed ancestor would trap this fixed
 // overlay inside that box instead of pinning it to the viewport.
-function ProjectDialog({ work, onClose }) {
+function ProjectDialog({ work, onClose, onReadPaper, blocked = false }) {
   const panelRef = useRef(null);
   const closeRef = useRef(null);
 
@@ -240,8 +247,9 @@ function ProjectDialog({ work, onClose }) {
     const prevOverflow = root.style.overflow;
     root.style.overflow = 'hidden';
 
+    // While the paper reader is open on top, Escape belongs to the reader.
     const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape' && !blocked) onClose();
     };
     window.addEventListener('keydown', onKey);
 
@@ -254,7 +262,7 @@ function ProjectDialog({ work, onClose }) {
       window.removeEventListener('keydown', onKey);
       clearTimeout(timer);
     };
-  }, [onClose]);
+  }, [onClose, blocked]);
 
   const mailto =
     `mailto:${EMAIL}?subject=` + encodeURIComponent(`About your project: ${work.title}`);
@@ -355,6 +363,11 @@ function ProjectDialog({ work, onClose }) {
           )}
 
           <div className="pv__actions">
+            {work.paper && (
+              <button className="pv__btn is-primary" type="button" onClick={onReadPaper}>
+                Read the paper <span aria-hidden="true">→</span>
+              </button>
+            )}
             {work.links?.length > 0 ? (
               work.links.map((l, i) => (
                 <a
@@ -368,7 +381,7 @@ function ProjectDialog({ work, onClose }) {
                 </a>
               ))
             ) : (
-              <a className="pv__btn is-primary" href={mailto}>
+              <a className={`pv__btn${work.paper ? '' : ' is-primary'}`} href={mailto}>
                 Ask about this project <span aria-hidden="true">↗</span>
               </a>
             )}
@@ -387,6 +400,7 @@ function ProjectDialog({ work, onClose }) {
 
 export default function FeaturedWorks() {
   const [openWork, setOpenWork] = useState(null);
+  const [readingPaper, setReadingPaper] = useState(false);
   // The card that opened the panel, so focus goes back to it on close rather
   // than jumping to the top of the page.
   const openerRef = useRef(null);
@@ -398,6 +412,7 @@ export default function FeaturedWorks() {
 
   const close = useCallback(() => {
     setOpenWork(null);
+    setReadingPaper(false);
     openerRef.current?.focus?.({ preventScroll: true });
   }, []);
 
@@ -414,7 +429,20 @@ export default function FeaturedWorks() {
         ))}
       </ul>
 
-      {openWork && <ProjectDialog work={openWork} onClose={close} />}
+      {openWork && (
+        <ProjectDialog
+          work={openWork}
+          onClose={close}
+          onReadPaper={() => setReadingPaper(true)}
+          blocked={readingPaper}
+        />
+      )}
+
+      {readingPaper && (
+        <Suspense fallback={null}>
+          <PaperReader onClose={() => setReadingPaper(false)} />
+        </Suspense>
+      )}
     </section>
   );
 }

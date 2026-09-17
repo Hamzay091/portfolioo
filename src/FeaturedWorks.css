@@ -421,10 +421,15 @@
   gap: 0.8rem;
 }
 
+/* Both a link and a button wear this, so the button's own styling is reset. */
 .pv__btn {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
   padding: 0.85rem 1.5rem;
   border: 1px solid var(--border);
   border-radius: 999px;
