@@ -308,6 +308,11 @@ function ProjectDialog({ work, onClose }) {
                   className="pv__video"
                   src={section.src}
                   controls
+                  // Drops Download and Picture-in-Picture from the player menu,
+                  // and the same two from the right-click menu.
+                  controlsList="nodownload noplaybackrate"
+                  disablePictureInPicture
+                  onContextMenu={(e) => e.preventDefault()}
                   playsInline
                   preload="metadata"
                 />
