@@ -13,6 +13,11 @@
   margin-bottom: 2.5rem;
 }
 
+.works__lede {
+  margin: -1.6rem 0 2.5rem;
+  font-size: 0.98rem;
+}
+
 /* Two columns on desktop, so four projects sit as an even 2x2 grid instead
    of three in a row with one left alone. One column on narrow screens. */
 .works__grid {
@@ -27,9 +32,20 @@
   perspective: 1000px;
 }
 
+/* Every card is a button that opens its case study, so it needs the browser's
+   button styling stripped back to a plain block of content. */
 .works__card {
   display: block;
+  width: 100%;
   height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
   transform-style: preserve-3d;
   transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
   /* Slow, springy settle back to flat when the pointer leaves. */
@@ -125,7 +141,7 @@
   opacity: 1;
 }
 
-.works__card.is-link:focus-visible {
+.works__card:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 6px;
   border-radius: 12px;
@@ -165,11 +181,259 @@
   line-height: 1.5;
 }
 
+/* The affordance: says the card opens something, and leans forward on hover. */
+.works__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.works__more span {
+  transition: transform 0.25s ease-out;
+}
+
+.works__card:hover .works__more span,
+.works__card:focus-visible .works__more span {
+  transform: translateX(4px);
+}
+
+/* ------------------------------------------------------------------
+   PROJECT VIEW
+   Full-screen case study, portalled to <body>. Fixed positioning only
+   resolves against the viewport out here; inside .site-main its
+   transform would capture it. See FeaturedWorks.jsx.
+   ------------------------------------------------------------------ */
+.pv {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(6px);
+  animation: pv-fade 0.25s ease-out both;
+}
+
+.pv__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(940px, 100%);
+  max-height: min(88svh, 900px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--bg);
+  box-shadow: 0 50px 90px -40px rgba(0, 0, 0, 0.8);
+  animation: pv-rise 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pv-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pv-rise {
+  from { opacity: 0; transform: perspective(900px) translateY(28px) rotateX(6deg); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Stays put while the panel scrolls under it. A flex item, not a float: a
+   block-level replaced element - the image right below - is required to clear
+   floats, which pushed the whole picture down and in. The negative bottom
+   margin cancels the button's own height so the image starts at the top. */
+.pv__close {
+  position: sticky;
+  top: 0.85rem;
+  align-self: flex-end;
+  z-index: 2;
+  margin: 0.85rem 0.85rem calc(-40px - 0.85rem);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  color: var(--text-h);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease-out, color 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.pv__close:hover,
+.pv__close:focus-visible {
+  background: var(--accent);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.pv__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Capped, or the 11:6 image eats the panel and the story below it starts
+   off screen. */
+/* A fixed height, not an aspect ratio: a capped ratio transfers back through
+   the box and shrinks the width too, leaving the image floating in a gap. */
+.pv__media {
+  width: 100%;
+  flex: none; /* a flex item would otherwise shrink past its height */
+  height: min(40svh, 380px);
+  background: var(--accent-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+/* contain, not cover: these are infographics and a logo. Cropping them cuts
+   off the very content someone opened the project to read. */
+.pv__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pv__body {
+  padding: clamp(1.5rem, 3.5vw, 2.6rem);
+}
+
+.pv__role {
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.pv__title {
+  margin-top: 0.35rem;
+  font-family: var(--script, 'Dancing Script', cursive);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  line-height: 1.1;
+  color: var(--text-h);
+}
+
+.pv__overview {
+  margin-top: 1rem;
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+
+.pv__sub {
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-h);
+}
+
+.pv__list {
+  margin-top: 0.85rem;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.55rem;
+  font-size: 0.97rem;
+  line-height: 1.55;
+}
+
+.pv__list li::marker {
+  color: var(--accent);
+}
+
+.pv__tags {
+  margin-top: 0.85rem;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.pv__tags li {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  background: var(--accent-bg);
+  color: var(--text-h);
+}
+
+.pv__actions {
+  margin-top: 2.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.pv__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.85rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-h);
+  transition:
+    background 0.25s ease-out,
+    color 0.25s ease-out,
+    transform 0.25s ease-out,
+    box-shadow 0.25s ease-out;
+}
+
+.pv__btn.is-primary {
+  border-color: transparent;
+  background: var(--text-h);
+  color: var(--bg);
+}
+
+.pv__btn:hover,
+.pv__btn:focus-visible {
+  background: var(--accent);
+  border-color: transparent;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -14px var(--accent);
+}
+
+@media (max-width: 700px) {
+  .pv {
+    padding: 0;
+    place-items: end stretch;
+  }
+
+  .pv__panel {
+    max-height: 92svh;
+    border-radius: 18px 18px 0 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .works__card,
   .works__thumb,
-  .works__initial {
+  .works__initial,
+  .works__more span {
     transition: none;
+    transform: none;
+  }
+
+  .pv,
+  .pv__panel {
+    animation: none;
+  }
+
+  .pv__close:hover,
+  .pv__close:focus-visible {
     transform: none;
   }
 }
